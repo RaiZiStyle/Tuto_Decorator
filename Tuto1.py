@@ -34,12 +34,12 @@ class MyLogger:
 def get_default_logger():
     return MyLogger().get_logger()
 
-def log(_func=None, *, my_logger: Union[MyLogger, logging.Logger] = None):
+def log(_func=None, *, my_logger: MyLogger = None):
     def decorator_log(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             if my_logger is None:
-                logger = get_default_logger()
+                logger = MyLogger().logger
             else:
                 if isinstance(my_logger, MyLogger):
                     logger = my_logger.logger
@@ -49,10 +49,11 @@ def log(_func=None, *, my_logger: Union[MyLogger, logging.Logger] = None):
             logger.debug(f"function {func.__name__} called with args {signature}")
             try:
                 result = func(*args, **kwargs)
-                return result
             except Exception as e:
                 logger.exception(f"Exception raised in {func.__name__}. exception: {str(e)}")
                 raise e
+            logger.info(f"Function {func.__name__} return with {result}")
+            return result
         return wrapper
 
     if _func is None:
