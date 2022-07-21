@@ -31,8 +31,6 @@ class MyLogger:
     def get_logger(self, name=None):
         return logging.getLogger(name)
 
-def get_default_logger():
-    return MyLogger().get_logger()
 
 def log(_func=None, *, my_logger: MyLogger = None):
     def decorator_log(func):
