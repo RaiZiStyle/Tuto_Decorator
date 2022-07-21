@@ -5,7 +5,21 @@ import functools
 class LogDecorator(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)
+        formatter = "[%(asctime)s - %(name)s - %(levelname)s] %(message)s"
+        rt = logging.basicConfig(level=logging.DEBUG,
+                                format=formatter,
+                                handlers=[logging.StreamHandler()])
+        # create a file handler
+        handler_file = logging.FileHandler("test_log.log")
+        handler_file.setLevel(logging.DEBUG)
+
+        # create a logging format
+        formatter = logging.Formatter('[%(asctime)s - %(name)s - %(levelname)s] %(message)s')
+        handler_file.setFormatter(formatter)
+
+        # add the file handler to the logger
+        self.logger.addHandler(handler_file)
+
     def __call__(self, fn):
         @functools.wraps(fn)
         def decorated(*args, **kwargs):
@@ -26,6 +40,7 @@ class LogDecorator(object):
 @LogDecorator()
 def sum(a, b, c):
     return a + b + c
+
 
 sum(1,2,3)
     
